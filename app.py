@@ -11,6 +11,7 @@ import os
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PIL import Image
+from PIL import ImageFilter
 
 app = QApplication([])
 win = QWidget()
@@ -31,7 +32,8 @@ btn_flip = QPushButton("Дзеркало")
 btn_sharp = QPushButton("Різкість")
 btn_bw = QPushButton("Ч/Б")
 btn_texture = QPushButton("Рамка")
-
+btn_dirt = QPushButton("Бруд")
+btn_elegant = QPushButton("Elegant")
 
 row = QHBoxLayout()          # Основний рядок
 col1 = QVBoxLayout()         # ділиться на два стовпці
@@ -46,6 +48,8 @@ row_tools.addWidget(btn_flip)
 row_tools.addWidget(btn_sharp)
 row_tools.addWidget(btn_bw)
 row_tools.addWidget(btn_texture)
+row_tools.addWidget(btn_dirt)
+row_tools.addWidget(btn_elegant)
 col2.addLayout(row_tools)
 
 
@@ -136,7 +140,27 @@ class ImageProcessor:
                 self.showImage(image_path)
 
         def add_texture(self):
-                texture = Image.open("lights/red.png")
+                texture = Image.open("red.png")
+                width, height = self.image.size
+                texture = texture.resize((width, height))
+                self.image.paste(texture, (0, 0), texture)
+
+                self.saveImage()
+                image_path = os.path.join(workdir, self.save_dir, self.filename)
+                self.showImage((image_path))
+
+        def add_dirt(self):
+                texture = Image.open("images-removebg-preview.png")
+                width, height = self.image.size
+                texture = texture.resize((width, height))
+                self.image.paste(texture, (0, 0), texture)
+
+                self.saveImage()
+                image_path = os.path.join(workdir, self.save_dir, self.filename)
+                self.showImage((image_path))
+
+        def add_elegant(self):
+                texture = Image.open("elegant.png")
                 width, height = self.image.size
                 texture = texture.resize((width, height))
                 self.image.paste(texture, (0, 0), texture)
@@ -165,6 +189,8 @@ btn_right.clicked.connect(workimage.do_right)
 btn_sharp.clicked.connect(workimage.do_sharpen)
 btn_flip.clicked.connect(workimage.do_flip)
 btn_texture.clicked.connect(workimage.add_texture)
+btn_dirt.clicked.connect(workimage.add_dirt)
+btn_elegant.clicked.connect(workimage.add_elegant)
 app.exec()
 
 
